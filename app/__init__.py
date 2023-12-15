@@ -13,6 +13,7 @@ from openai import AsyncOpenAI
 from pydantic import BaseModel, Field
 
 from app.tagger import WdTaggerSDK
+from .blip import BlipTool
 from .settings import CurrentSetting
 
 SYSTEM = """
@@ -82,12 +83,26 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
             character_threshold=0.85
         )
         tag_result = raw_input_wd["tag_result"]
+        logger.info(f"Tagging: {raw_input_wd}")
     except Exception as e:
         logger.error(e)
         return JSONResponse(content={"error": "WD API Error"}, status_code=500)
-    logger.info(f"Tagging: {raw_input_wd}")
+
+    blip_result = None
+    if CurrentSetting.blip_api_endpoint:
+        try:
+            await file.seek(0)
+            blip_result = await BlipTool(CurrentSetting.blip_api_endpoint).generate_caption_with_request(
+                image_data=await file.read())
+            logger.info(f"Blip: {blip_result}")
+        except Exception as e:
+            logger.error(e)
+            return JSONResponse(content={"error": "Blip API Error"}, status_code=500)
     try:
         task = get_template(content=user_template, tags=tag_result)
+        if blip_result:
+            task = f"{task}\n\n>With A `Picture({blip_result})`"
+
         # task = (">参考模板\n" + user_template + f"""\n\n>仿写任务\n商品标签：{raw_input_wd}""")
         logger.info(f"PromptTask: {task}")
         model = await aclient.chat.completions.create(

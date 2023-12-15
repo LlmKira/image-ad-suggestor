@@ -1,8 +1,14 @@
 # image-ad-suggestor
 
-根据图像内容推荐广告的后端服务
+根据图像生产内容的后端服务
 
-搭配部署 https://github.com/LlmKira/wd14-tagger-server
+搭配部署以下项目。
+
+- https://github.com/LlmKira/wd14-tagger-server
+
+- https://github.com/LlmKira/BlipServer
+
+速度快，负担小
 
 ## Config
 
@@ -11,6 +17,10 @@ cp .env.exp .env
 nano .env
 
 ```
+
+BlipServer 为可选配置
+
+更改信息必须重启实例
 
 ## Run
 

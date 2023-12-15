@@ -15,6 +15,7 @@ dependencies = [
     "pydantic-settings>=2.1.0",
     "python-dotenv>=1.0.0",
     "toml>=0.10.2",
+    "requests[socks]>=2.31.0",
 ]
 requires-python = ">=3.9"
 readme = "README.md"
