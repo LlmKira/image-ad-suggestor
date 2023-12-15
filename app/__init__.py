@@ -28,7 +28,7 @@ class ProductsIntro(BaseModel):
     title_cn: str = Field(..., description="此商品的标题.")
     description_cn: str = Field(...,
                                 description="此商品的描述.")
-    # tags: list[str] = Field(..., description="Exp: ['#风景', '#旅行']")
+    tags: list[str] = Field(..., description="Exp: ['#风景', '#旅行']")
 
 
 app = FastAPI()
@@ -73,7 +73,7 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
         return JSONResponse(content={"error": "WD API Error"}, status_code=500)
     logger.info(f"Tagging: {raw_input_wd}")
     try:
-        task = (">参考模板\n" + user_template + f"""\n\n>仿写任务\nTags：{raw_input_wd}""")
+        task = (">参考模板\n" + user_template + f"""\n\n>仿写任务\n商品标签：{raw_input_wd}""")
         logger.info(f"PromptTask: {task}")
         model = await aclient.chat.completions.create(
             model="gpt-3.5-turbo",
