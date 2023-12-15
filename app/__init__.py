@@ -101,7 +101,7 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
     try:
         task = get_template(content=user_template, tags=tag_result)
         if blip_result:
-            task = f"{task}\n\n>With A `Picture({blip_result})`"
+            task = f"{task}\n\n>The scenes is `{blip_result}`"
 
         # task = (">参考模板\n" + user_template + f"""\n\n>仿写任务\n商品标签：{raw_input_wd}""")
         logger.info(f"PromptTask: {task}")
