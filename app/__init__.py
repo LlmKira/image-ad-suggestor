@@ -25,15 +25,15 @@ Your creation should capture the essence of the new subject, resonate with the t
 """
 
 
-class ProductsIntro(BaseModel):
+class GenerateIntro(BaseModel):
     """
-    Extracts the title and description of a product from a list of bullet points.
+    书写相关的商品介绍/社交媒体文案
     """
     title_cn: str = Field(..., description="社交媒体标题/商品标题")
-    description_cn: str = Field(...,
-                                description="物品/商品的描述/社交媒体文案")
-    tags_cn: list[str] = Field(..., description="帖子的标签/商品的标签 Exp: ['#风景', '#旅行']")
+    description_cn: str = Field(..., description="物品/商品的描述/社交媒体文案")
 
+
+# print(GenerateIntro.model_json_schema())
 
 aclient = instructor.apatch(AsyncOpenAI(
     base_url=CurrentSetting.openai_base_url,
@@ -91,7 +91,7 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
         logger.info(f"PromptTask: {task}")
         model = await aclient.chat.completions.create(
             model="gpt-3.5-turbo",
-            response_model=ProductsIntro,
+            response_model=GenerateIntro,
             messages=[
                 {
                     "role": "system",
@@ -103,7 +103,7 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
                 },
             ],
         )
-        assert isinstance(model, ProductsIntro)
+        assert isinstance(model, GenerateIntro)
         return JSONResponse(model.model_dump())
     except Exception as e:
         logger.exception(e)
