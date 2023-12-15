@@ -23,18 +23,19 @@ aclient = instructor.apatch(AsyncOpenAI(
 
 class ProductsIntro(BaseModel):
     """
-    Refer Given Info,Extracts the title and description of a product from a list of bullet points.
+    Extracts the title and description of a product from a list of bullet points.
     """
-    title: str = Field(..., description="此商品的标题.")
-    description: str = Field(...,
-                             description="此商品的描述.")
-    tags: list[str] = Field(..., description="Exp: ['#风景', '#旅行']")
+    title_cn: str = Field(..., description="此商品的标题.")
+    description_cn: str = Field(...,
+                                description="此商品的描述.")
+    # tags: list[str] = Field(..., description="Exp: ['#风景', '#旅行']")
 
 
 app = FastAPI()
 
 SYSTEM = """
-你现在是一个电商平台的运营，需要从相关信息和模板中创作出一个商品的标题和介绍
+你现在是一个电商平台的运营，需要从相关信息和模板中创作出一个商品的标题和介绍。 !important
+
 Study the provided copywriting templates to understand the style and emotional expression each one conveys.
 Once you have grasped the stylistic elements, I will present you with a specific subject.
 Your task will then be to synthesize a new piece of copywriting that aligns with the learned styles.
@@ -72,7 +73,7 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
         return JSONResponse(content={"error": "WD API Error"}, status_code=500)
     logger.info(f"Tagging: {raw_input_wd}")
     try:
-        task = (">参考模板" + user_template + f"""\n\n>仿写任务 \nTags：{raw_input_wd}""")
+        task = (">参考模板\n" + user_template + f"""\n\n>仿写任务\nTags：{raw_input_wd}""")
         logger.info(f"PromptTask: {task}")
         model = await aclient.chat.completions.create(
             model="gpt-3.5-turbo",
