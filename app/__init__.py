@@ -58,7 +58,7 @@ async def generate_caption(file: UploadFile = File(...)) -> JSONResponse:
         )
     except Exception as e:
         logger.error(e)
-        return JSONResponse({"error": "WD API Error"})
+        return JSONResponse(content={"error": "WD API Error"}, status_code=500)
     logger.info(f"Tagging: {raw_input_wd}")
     try:
         model = await aclient.chat.completions.create(
@@ -84,4 +84,4 @@ async def generate_caption(file: UploadFile = File(...)) -> JSONResponse:
         return JSONResponse(model.model_dump())
     except Exception as e:
         logger.exception(e)
-        return JSONResponse({"error": "OpenAI API Error"})
+        return JSONResponse(content={"error": "OpenAI API Error"}, status_code=500)
