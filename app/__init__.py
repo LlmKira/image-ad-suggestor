@@ -3,6 +3,8 @@
 # @Author  : sudoskys
 # @File    : __init__.py.py
 # @Software: PyCharm
+import json
+
 import instructor
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
@@ -21,10 +23,13 @@ aclient = instructor.apatch(AsyncOpenAI(
 
 class ProductsIntro(BaseModel):
     """
-    Extracts the title and description of a product from a list of bullet points.
+    Refer Given Info,Extracts the title and description of a product from a list of bullet points.
     """
-    title_cn: str = Field(..., description="The title of the product. 中文")
-    description_cn: str = Field(..., description="The description of the product. 中文")
+    title: str = Field(..., description="商品标题.")
+    description: str = Field(...,
+                             description="商品介绍."
+                             )
+    tags: list[str] = Field(..., description="Exp: ['#风景', '#旅行']")
 
 
 app = FastAPI()
@@ -39,15 +44,27 @@ Your creation should capture the essence of the new subject, resonate with the t
 
 USER_TEMPLATE = """
 >Template
-“峰回路转，雾凇乍现，一缕阳光斜射，刹那间晶莹剔透，宛若仙境，美极了！ #风景 #旅行”
-“秋是慢入的,但冷却是突然的,晴不知夏去,一雨方觉秋深！有些情绪不言而喻…… #最美风景 #秋天 #心动的旅行”
-“愿新年胜旧年，愿将来胜过往，愿你与旧事归于尽，来年依旧迎花开。#向烟花许个愿 #除夕 #大年三十 #跨年夜”
-“你是我最想留住的幸运，我想用我的心，把你永远留在我身边。#情话 #表白 #爱情”
+
 """
+
+# Load templates into memory
+with open('template.json', 'r') as f:
+    templates = json.load(f)
+
+logger.info(f"Loaded {len(templates)} templates")
+
+
+@app.get("/templates")
+async def get_templates():
+    return templates
 
 
 @app.post("/generate_caption")
-async def generate_caption(file: UploadFile = File(...)) -> JSONResponse:
+async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JSONResponse:
+    try:
+        user_template = templates[template_id]
+    except KeyError:
+        return JSONResponse(content={"error": "Invalid template_id"}, status_code=400)
     try:
         await file.seek(0)
         raw_input_wd = await WdTaggerSDK(base_url=CurrentSetting.wd_api_endpoint).upload(
@@ -72,9 +89,9 @@ async def generate_caption(file: UploadFile = File(...)) -> JSONResponse:
                 {
                     "role": "user",
                     "content":
-                        USER_TEMPLATE
+                        user_template
                         + f"""
-                        >仿写任务
+                        >Input
                         Tags：{raw_input_wd}
                         """
                 },
