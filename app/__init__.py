@@ -29,10 +29,10 @@ class ProductsIntro(BaseModel):
     """
     Extracts the title and description of a product from a list of bullet points.
     """
-    title_cn: str = Field(..., description="推荐的标题")
+    title_cn: str = Field(..., description="社交媒体标题/商品标题")
     description_cn: str = Field(...,
-                                description="物品/商品的描述，非常好的文案")
-    tags_cn: list[str] = Field(..., description="文案的标签 Exp: ['#风景', '#旅行']")
+                                description="物品/商品的描述/社交媒体文案")
+    tags_cn: list[str] = Field(..., description="帖子的标签/商品的标签 Exp: ['#风景', '#旅行']")
 
 
 aclient = instructor.apatch(AsyncOpenAI(
