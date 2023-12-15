@@ -46,7 +46,7 @@ Your creation should capture the essence of the new subject, resonate with the t
 with open('template.json', 'r') as f:
     templates = json.load(f)
 
-logger.info(f"Loaded {len(templates)} templates")
+logger.info(f"Loaded {len(templates)} templates...")
 
 
 @app.get("/templates")
