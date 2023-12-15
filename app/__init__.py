@@ -3,9 +3,9 @@
 # @Author  : sudoskys
 # @File    : __init__.py.py
 # @Software: PyCharm
-import json
 
 import instructor
+import toml
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from loguru import logger
@@ -42,10 +42,7 @@ aclient = instructor.apatch(AsyncOpenAI(
 
 app = FastAPI()
 
-# Load templates into memory
-with open('template.json', 'r') as f:
-    MESSAGE_TEMPLATE = json.load(f)
-
+MESSAGE_TEMPLATE = toml.load('template.toml')
 logger.info(f"Loaded {len(MESSAGE_TEMPLATE)} templates...")
 
 
@@ -71,8 +68,9 @@ async def get_templates():
 @app.post("/generate_caption")
 async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JSONResponse:
     try:
-        user_template = MESSAGE_TEMPLATE[template_id]
-    except KeyError:
+        user_template = MESSAGE_TEMPLATE[template_id]["template"]
+    except KeyError as e:
+        logger.error(f"Invalid template_id: {template_id}, {e}")
         return JSONResponse(content={"error": "Invalid template_id"}, status_code=400)
     try:
         await file.seek(0)
