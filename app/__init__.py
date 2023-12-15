@@ -80,12 +80,13 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
             general_threshold=0.35,
             character_threshold=0.85
         )
+        tag_result = raw_input_wd["tag_result"]
     except Exception as e:
         logger.error(e)
         return JSONResponse(content={"error": "WD API Error"}, status_code=500)
     logger.info(f"Tagging: {raw_input_wd}")
     try:
-        task = get_template(content=user_template, tags=raw_input_wd)
+        task = get_template(content=user_template, tags=tag_result)
         # task = (">参考模板\n" + user_template + f"""\n\n>仿写任务\n商品标签：{raw_input_wd}""")
         logger.info(f"PromptTask: {task}")
         model = await aclient.chat.completions.create(
