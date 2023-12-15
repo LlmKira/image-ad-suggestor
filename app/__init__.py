@@ -42,11 +42,6 @@ Your task will then be to synthesize a new piece of copywriting that aligns with
 Your creation should capture the essence of the new subject, resonate with the themes of the examples, and include suitable hashtags for thematic consistency.
 """
 
-USER_TEMPLATE = """
->Template
-
-"""
-
 # Load templates into memory
 with open('template.json', 'r') as f:
     templates = json.load(f)
@@ -78,6 +73,8 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
         return JSONResponse(content={"error": "WD API Error"}, status_code=500)
     logger.info(f"Tagging: {raw_input_wd}")
     try:
+        task = (user_template + f""">Input \nTags：{raw_input_wd}""")
+        logger.info(f"PromptTask: {task}")
         model = await aclient.chat.completions.create(
             model="gpt-3.5-turbo",
             response_model=ProductsIntro,
@@ -88,12 +85,7 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
                 },
                 {
                     "role": "user",
-                    "content":
-                        user_template
-                        + f"""
-                        >Input
-                        Tags：{raw_input_wd}
-                        """
+                    "content": task
                 },
             ],
         )
