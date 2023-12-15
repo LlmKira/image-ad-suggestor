@@ -25,10 +25,9 @@ class ProductsIntro(BaseModel):
     """
     Refer Given Info,Extracts the title and description of a product from a list of bullet points.
     """
-    title: str = Field(..., description="商品标题.")
+    title: str = Field(..., description="此商品的标题.")
     description: str = Field(...,
-                             description="商品介绍."
-                             )
+                             description="此商品的描述.")
     tags: list[str] = Field(..., description="Exp: ['#风景', '#旅行']")
 
 
