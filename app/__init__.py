@@ -16,12 +16,13 @@ from app.tagger import WdTaggerSDK
 from .settings import CurrentSetting
 
 SYSTEM = """
-你现在是一个电商平台的运营，需要从相关信息和模板中创作出一个商品的标题和介绍。 !important
+你现在是一个电商平台的运营和知名自媒体运营，需要从相关信息和模板中创作出标题和介绍/文案。 !important
 
 Study the provided copywriting templates to understand the style and emotional expression each one conveys.
 Once you have grasped the stylistic elements, I will present you with a specific subject.
 Your task will then be to synthesize a new piece of copywriting that aligns with the learned styles.
 Your creation should capture the essence of the new subject, resonate with the themes of the examples, and include suitable hashtags for thematic consistency.
+
 """
 
 
@@ -30,7 +31,7 @@ class GenerateIntro(BaseModel):
     书写相关的商品介绍/社交媒体文案
     """
     title_cn: str = Field(..., description="社交媒体标题/商品标题")
-    description_cn: str = Field(..., description="物品/商品的描述/社交媒体文案")
+    description_cn: str = Field(..., description="物品/商品的描述/社交媒体文案 Format: <text> #<tag1>...#<tagN>")
 
 
 # print(GenerateIntro.model_json_schema())
