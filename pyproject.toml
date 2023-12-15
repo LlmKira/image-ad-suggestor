@@ -1,0 +1,21 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "n", email = "n"},
+]
+dependencies = [
+    "instructor>=0.4.2",
+    "loguru>=0.7.2",
+    "aiofiles>=23.2.1",
+    "fastapi>=0.105.0",
+    "uvicorn>=0.24.0.post1",
+    "python-multipart>=0.0.6",
+    "pydantic-settings>=2.1.0",
+    "python-dotenv>=1.0.0",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "n"}
+
