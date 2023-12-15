@@ -73,7 +73,7 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
         return JSONResponse(content={"error": "WD API Error"}, status_code=500)
     logger.info(f"Tagging: {raw_input_wd}")
     try:
-        task = (user_template + f"""\n\n>仿写任务 \nTags：{raw_input_wd}""")
+        task = (">参考模板" + user_template + f"""\n\n>仿写任务 \nTags：{raw_input_wd}""")
         logger.info(f"PromptTask: {task}")
         model = await aclient.chat.completions.create(
             model="gpt-3.5-turbo",
