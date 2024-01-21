@@ -82,6 +82,7 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
             general_threshold=0.35,
             character_threshold=0.85
         )
+        await file.close()
         tag_result = raw_input_wd["tag_result"]
         logger.info(f"Tagging: {raw_input_wd}")
     except Exception as e:
