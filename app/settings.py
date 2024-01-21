@@ -8,8 +8,8 @@ from typing import Optional
 import requests
 from dotenv import load_dotenv
 from loguru import logger
-from pydantic import ConfigDict, model_validator
-from pydantic_settings import BaseSettings
+from pydantic import model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv()
 
@@ -20,7 +20,9 @@ class ServerSettings(BaseSettings):
     wd_api_endpoint: str = "http://127.0.0.1:10011/upload"
     blip_api_endpoint: Optional[str] = None
 
-    model_config = ConfigDict()
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+    )
 
     @model_validator(mode="after")
     def check_env(self):
