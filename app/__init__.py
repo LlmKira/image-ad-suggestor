@@ -10,7 +10,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from loguru import logger
 from openai import AsyncOpenAI
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.tagger import WdTaggerSDK
 from .blip import BlipTool
@@ -33,6 +33,12 @@ class GenerateIntro(BaseModel):
     """
     title_cn: str = Field(..., description="社交媒体标题/商品标题")
     description_cn: str = Field(..., description="物品/商品的描述/社交媒体文案 Format: <text> #<tag1>...#<tagN>")
+
+    @field_validator("description_cn")
+    def validate_description_cn(cls, v):
+        if "#" not in v:
+            raise ValueError("Must contain at least one tag. Format: <text> #<tag1>...#<tagN>")
+        return v
 
 
 # print(GenerateIntro.model_json_schema())
@@ -109,6 +115,7 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
         model = await aclient.chat.completions.create(
             model="gpt-3.5-turbo",
             response_model=GenerateIntro,
+            max_retries=2,
             messages=[
                 {
                     "role": "system",
