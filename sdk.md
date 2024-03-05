@@ -25,7 +25,7 @@ curl -X POST "http://localhost:8000/generate_caption" -H "accept: application/js
 
 ##### Response
 
-```jsonsdk 
+```jsonsdk
 {
   "title_cn": "产品标题",
   "description_cn": "产品描述"
