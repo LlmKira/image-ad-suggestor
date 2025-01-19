@@ -43,9 +43,12 @@ class GenerateIntro(BaseModel):
 
 # print(GenerateIntro.model_json_schema())
 
-aclient = instructor.apatch(AsyncOpenAI(
-    base_url=CurrentSetting.openai_base_url,
-    api_key=CurrentSetting.openai_api_key)
+client = instructor.from_openai(
+    AsyncOpenAI(
+        base_url=CurrentSetting.openai_base_url,
+        api_key=CurrentSetting.openai_api_key
+    ),
+    mode=instructor.Mode.JSON
 )
 
 app = FastAPI()
@@ -112,10 +115,11 @@ async def generate_caption(template_id: str, file: UploadFile = File(...)) -> JS
 
         # task = (">参考模板\n" + user_template + f"""\n\n>仿写任务\n商品标签：{raw_input_wd}""")
         logger.info(f"PromptTask: {task}")
-        model = await aclient.chat.completions.create(
-            model="gpt-3.5-turbo",
+        model = await client.chat.completions.create(
+            model="qwen/qwen-2.5-72b-instruct",
             response_model=GenerateIntro,
             max_retries=2,
+            strict=False,
             messages=[
                 {
                     "role": "system",

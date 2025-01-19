@@ -3,10 +3,10 @@ name = ""
 version = ""
 description = ""
 authors = [
-    {name = "n", email = "n"},
+    { name = "n", email = "n" },
 ]
 dependencies = [
-    "instructor>=0.4.2",
+    "instructor>=1.0.0",
     "loguru>=0.7.2",
     "aiofiles>=23.2.1",
     "fastapi>=0.105.0",
@@ -17,9 +17,9 @@ dependencies = [
     "toml>=0.10.2",
     "requests[socks]>=2.31.0",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.9,<3.12"
 readme = "README.md"
-license = {text = "n"}
+license = { text = "n" }
 
 [tool.pdm.dev-dependencies]
 dev = [
